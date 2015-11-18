@@ -1,0 +1,31 @@
+{
+  "name": "template-router",
+  "description": "Collection of custom components for templating",
+  "version": "0.0.0",
+  "authors": [
+    "Simpla <admin@simpla.io>"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "web component",
+    "polymer",
+    "template"
+  ],
+  "ignore": [
+    "*",
+    "!src/**/*",
+    "!template-yield.html",
+    "!LICENSE"
+  ],
+  "dependencies": {
+    "webcomponentsjs": "^0.7.14",
+    "polymer": "^1.2.3"
+  },
+  "devDependencies": {
+    "web-component-tester": "^3.3.22",
+    "test-fixture": "PolymerElements/test-fixture#~1.0.0"
+  },
+  "componentImports": [
+    "polymer/polymer.html"
+  ]
+}

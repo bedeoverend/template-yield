@@ -1,0 +1,80 @@
+c!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>template-yield</title>
+    <script src="../../webcomponentsjs/webcomponents.min.js"></script>
+    <script src="../../web-component-tester/browser.js"></script>
+    <script src="../../test-fixture/test-fixture-mocha.js"></script>
+    <link rel="import" href="../../test-fixture/test-fixture.html">
+
+    <!-- Import the element to test -->
+    <link rel="import" href="../template-yield.html">
+  </head>
+  <body>
+    <template class="fixture" id="mars">
+      <div>I love mars</div>
+    </template>
+
+    <template class="fixture" id="saturn">
+      <div>I love saturn</div>
+    </template>
+
+    <template class="fixture" id="weather">
+      <div>The weather is <span>[[weather]]</span></div>
+    </template>
+
+    <test-fixture id="default">
+      <template>
+        <template-yield></template-yield>
+      </template>
+    </test-fixture>
+    <script>
+      describe('<template-yield>', function() {
+
+        var component,
+            templates = {},
+            componentFixtures;
+
+        componentFixtures = window.fixtures;
+
+        before(function() {
+          [].slice.call(document.querySelectorAll('template.fixture'))
+            .forEach(function(template) {
+              templates[template.id] = template;
+            });
+        });
+
+        beforeEach(function() {
+          component = fixture('default');
+        });
+
+        it('is okay', function() {
+          expect(component).to.be.ok;
+        });
+
+        describe('loading templates', function() {
+          it('should load in the specified template', function() {
+            component.template = templates.mars;
+
+            expect(component.textContent.trim()).to.equal('I love mars');
+          });
+
+          it('should replace previous template', function() {
+            component.template = templates.mars;
+            component.template = templates.saturn;
+
+            expect(component.textContent.trim()).to.equal('I love saturn');
+          });
+
+          it('should take props and apply to current template', function() {
+            component.template = templates.weather;
+            component.set('props.weather', 'rainy');
+
+            expect(component.textContent.trim()).to.equal('The weather is rainy');
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
