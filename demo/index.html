@@ -5,9 +5,75 @@
     <title>template-router</title>
     <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
 
+    <!-- External Templates -->
+    <link class="template" data-name="master" rel="import" href="/demo/templates/master.html" />
+    <link class="template" data-name="header" rel="import" href="/demo/templates/header.html" />
+    <link class="template" data-name="footer" rel="import" href="/demo/templates/footer.html" />
+
+    <!-- Pages -->
+    <link class="pages" rel="import" href="/demo/pages.html" />
+
     <link rel="import" href="../template-yield.html" />
   </head>
   <body>
-    <!-- <template-yield></template-yield> -->
+    <template id="app" is="dom-bind">
+      <button class="page-selector" data-page="home">home</button>
+      <button class="page-selector" data-page="about">about</button>
+      <button class="page-selector" data-page="portfolio">portfolio</button>
+      <template-yield template="[[page]]" props="[[pageProps]]"></template-yield>
+    </template>
+
+    <!-- Internally defined templates -->
+    <template id="about">
+      <div>Hi, I'm the about page!</div>
+    </template>
+
+    <script>
+      var app = document.getElementById('app'),
+          templates = {},
+          pages = {
+            about: document.getElementById('about')
+          };
+
+      // Setup pages
+      (function() {
+        var pagesImport = document.querySelector('link.pages');
+
+        [].slice.call(pagesImport.import.querySelectorAll('template'))
+          .forEach(function(template) {
+            pages[template.id] = template;
+          });
+      })();
+
+      // Setup Templates
+      (function() {
+        [].slice.call(document.querySelectorAll('link.template'))
+          .forEach(function(importElement) {
+            var imported = importElement.import,
+                name = importElement.dataset.name;
+
+            templates[name] = imported.querySelector('template');
+          });
+      })();
+
+      // Update the page on button click
+      app.addEventListener('dom-change', function() {
+        [].slice.call(document.querySelectorAll('button.page-selector'))
+          .forEach(function(button) {
+            button.addEventListener('click', function() {
+              var page = button.dataset.page;
+              app.set('pageProps.page', pages[page]);
+            });
+          });
+      });
+
+      // Setup the default page to be the master, with default sub parts
+      app.page = templates.master;
+      app.pageProps = {
+        header: templates.header,
+        footer: templates.footer,
+        page: pages.home
+      };
+    </script>
   </body>
 </html>
