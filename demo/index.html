@@ -29,7 +29,7 @@
       </div>
       <h2>Output</h2>
       <div style="border: solid black thin; padding: 15px;">
-        <template-yield template="[[master]]" page-name="[[pageName]]" page="[[page]]" header="[[header]]" footer="[[footer]]" text="[[text]]"></template-yield>
+        <template-yield template="[[template]]" page-name="[[pageName]]" page="[[page]]" text="[[text]]"></template-yield>
       </div>
     </template>
 
@@ -72,6 +72,7 @@
         var pageSelectors = [].slice.call(document.querySelectorAll('button.page-selector')),
             namedPageSelectors = [].slice.call(document.querySelectorAll('button.named-page-selector'));
 
+        // Set directly via templates
         pageSelectors
           .forEach(function(button) {
             button.addEventListener('click', function() {
@@ -80,6 +81,7 @@
             });
           });
 
+        // Set otherwise via name
         namedPageSelectors
           .forEach(function(button) {
             button.addEventListener('click', function() {
@@ -89,9 +91,7 @@
       });
 
       // Setup the default page to be the master, with default sub parts
-      app.header = templates.header;
-      app.footer = templates.footer;
-      app.master = templates.master;
+      app.template = templates.master;
 
       app.page = pages.home;
     </script>
