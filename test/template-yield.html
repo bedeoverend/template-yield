@@ -67,11 +67,20 @@ c!DOCTYPE html>
             expect(component.textContent.trim()).to.equal('I love saturn');
           });
 
-          it('should take props and apply to current template', function() {
-            component.template = templates.weather;
-            component.set('props.weather', 'rainy');
+          describe('passing properties', function() {
+            it('pass after template is set', function() {
+              component.template = templates.weather;
+              component.weather = 'rainy';
 
-            expect(component.textContent.trim()).to.equal('The weather is rainy');
+              expect(component.textContent.trim()).to.equal('The weather is rainy');
+            });
+
+            it('pass before template is set', function() {
+              component.weather = 'rainy';
+              component.template = templates.weather;
+
+              expect(component.textContent.trim()).to.equal('The weather is rainy');
+            });
           });
         });
       });

@@ -10,20 +10,20 @@ class TemplateYield {
   get properties() {
     return {
       /**
-       * Properties to be passed to template
-       * @type {Object}
-       */
-      props: {
-        type: Object,
-        value: () => ({})
-      },
-
-      /**
        * Current template instance that's been stamped into DOM
        * @type {TemplateInstance}
        */
       instance: {
         observer: '_instanceChanged'
+      },
+
+      /**
+       * Array of props needed by the current instance
+       * @type {Array<string>}
+       */
+      _instanceProps: {
+        computed: '_getInstanceProps(instance)',
+        observer: '_instancePropsChanged'
       },
 
       /**
@@ -42,21 +42,34 @@ class TemplateYield {
     ];
   }
 
-  get observers() {
-    return [
-      '_propsChanged(props.*, instance)'
-    ];
-  }
+  _instancePropsChanged(properties) {
+    let hostProperties = Object.keys(this.properties),
+        allowedProperties = properties.filter(property => hostProperties.indexOf(property) === -1),
+        passAndSet,
+        passthrough;
 
-  _propsChanged(changeRecord, instance) {
-    let path = changeRecord.path.replace('props.',''),
-        value = changeRecord.value;
+    // Take the property and create getters and setters to pass the value
+    //  to and from the current instance
+    passthrough = (property) => {
+      Object.defineProperty(this, property, {
+        set: (value) => this.instance[property] = value,
+        get: () => this.instance[property]
+      });
+    };
 
-    if (path === '') {
-      Object.keys(props).forEach((prop) => instance[prop] = props[prop]);
-    } else {
-      this.set(path, value, instance);
-    }
+    // Get the current value before calling passthrough on the property,
+    //  then restore that value
+    passAndSet = (property) => {
+      let valueToRestore = this[property];
+
+      passthrough(property);
+
+      if (valueToRestore) {
+        this[property] = valueToRestore;
+      }
+    };
+
+    allowedProperties.forEach(passAndSet);
   }
 
   _instanceChanged(instance) {
@@ -76,6 +89,10 @@ class TemplateYield {
     this.templatize(template);
     instance = this.stamp(this.props);
     this.instance = instance;
+  }
+
+  _getInstanceProps(instance) {
+    return instance && instance._propertyEffects ? Object.keys(instance._propertyEffects) : [];
   }
 }
 
