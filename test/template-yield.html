@@ -24,6 +24,10 @@ c!DOCTYPE html>
       <div>The weather is <span>[[weather]]</span></div>
     </template>
 
+    <template is="named-template" name="neptune" class="fixture" id="neptune">
+      <div>I'm Neptune. I'm named</div>
+    </template>
+
     <test-fixture id="default">
       <template>
         <template-yield></template-yield>
@@ -51,6 +55,15 @@ c!DOCTYPE html>
 
         it('is okay', function() {
           expect(component).to.be.ok;
+        });
+
+        describe('named templates', function() {
+          it('should load corresponding template when setting byName', function() {
+            component.template = undefined;
+            component.from = 'neptune';
+
+            expect(component.template).to.equal(templates.neptune);
+          });
         });
 
         describe('loading templates', function() {

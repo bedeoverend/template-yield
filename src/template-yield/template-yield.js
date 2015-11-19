@@ -1,3 +1,8 @@
+import NamedTemplate from './helpers/named-template';
+
+// Register NamedTemplate
+Polymer(NamedTemplate);
+
 /**
  * Element to stamp out given template, with given props.
  * Resulting stamped template is inside child Light DOM
@@ -33,6 +38,15 @@ class TemplateYield {
        */
       template: {
         observer: '_templateChanged'
+      },
+
+      /**
+       * Name of template to load. Must correspond to a named-template with same name
+       * @type {String}
+       */
+      from: {
+        type: String,
+        observer: '_fromChanged'
       }
     };
   }
@@ -96,6 +110,15 @@ class TemplateYield {
     this.templatize(template);
     instance = this.stamp();
     this.instance = instance;
+  }
+
+  _fromChanged(name) {
+    let template = NamedTemplate.get(name);
+    if (!template) {
+      console.warn(`Could not find '${name}' template.`);
+    } else {
+      this.template = template;
+    }
   }
 
   _decoupleInstanceProperties() {

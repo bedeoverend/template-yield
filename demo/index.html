@@ -22,13 +22,14 @@
         <button class="page-selector" data-page="home">home</button>
         <button class="page-selector" data-page="about">about</button>
         <button class="page-selector" data-page="portfolio">portfolio</button>
+        <button class="named-page-selector" data-page="contact">contact</button>
         <br /><br />
         <div><strong>Write some content</strong></div>
         <textarea value="{{text::input}}"></textarea>
       </div>
       <h2>Output</h2>
       <div style="border: solid black thin; padding: 15px;">
-        <template-yield template="[[master]]" page="[[page]]" header="[[header]]" footer="[[footer]]" text="[[text]]"></template-yield>
+        <template-yield template="[[master]]" page-name="[[pageName]]" page="[[page]]" header="[[header]]" footer="[[footer]]" text="[[text]]"></template-yield>
       </div>
     </template>
 
@@ -68,11 +69,21 @@
 
       // Update the page on button click
       app.addEventListener('dom-change', function() {
-        [].slice.call(document.querySelectorAll('button.page-selector'))
+        var pageSelectors = [].slice.call(document.querySelectorAll('button.page-selector')),
+            namedPageSelectors = [].slice.call(document.querySelectorAll('button.named-page-selector'));
+
+        pageSelectors
           .forEach(function(button) {
             button.addEventListener('click', function() {
               var page = button.dataset.page;
               app.page = pages[page];
+            });
+          });
+
+        namedPageSelectors
+          .forEach(function(button) {
+            button.addEventListener('click', function() {
+              app.pageName = button.dataset.page;
             });
           });
       });
