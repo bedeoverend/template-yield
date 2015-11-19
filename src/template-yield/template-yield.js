@@ -23,7 +23,8 @@ class TemplateYield {
        */
       _instanceProps: {
         computed: '_getInstanceProps(instance)',
-        observer: '_instancePropsChanged'
+        observer: '_instancePropsChanged',
+        value: () => []
       },
 
       /**
@@ -54,7 +55,8 @@ class TemplateYield {
       Object.defineProperty(this, property, {
         set: (value) => this.instance[property] = value,
         get: () => this.instance[property],
-        configurable: true
+        configurable: true,
+        enumerable: true
       });
     };
 
@@ -87,13 +89,32 @@ class TemplateYield {
   _templateChanged(template) {
     let instance;
 
+    // Remove getters and setters and replace properties with actual values
+    //  this means that values can be carried over when changing templates
+    this._decoupleInstanceProperties();
+
     this.templatize(template);
-    instance = this.stamp(this.props);
+    instance = this.stamp();
     this.instance = instance;
   }
 
+  _decoupleInstanceProperties() {
+    this._instanceProps.forEach(property => {
+      Object.defineProperty(this, property, {
+        configurable: true,
+        enumerable: true,
+        value: this[property]
+      });
+    });
+  }
+
   _getInstanceProps(instance) {
-    return instance && instance._propertyEffects ? Object.keys(instance._propertyEffects) : [];
+    if (!(instance && instance._propertyEffects)) {
+      return [];
+    }
+
+    return Object.keys(instance._propertyEffects)
+            .filter(prop => instance._propertyEffects[prop][0].kind === 'annotation');
   }
 }
 
