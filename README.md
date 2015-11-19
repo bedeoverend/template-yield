@@ -1,10 +1,43 @@
 # Template Router
 
 Collection of custom components to help with routing using templates
+## \<template-yield\>
+`template-yield` stamps the given template as children.
+### Usage
+```html
+<template is="named-template" name="header">
+  <header>
+    <h1>[[title]]</h1>
+  </header>
+</template>
 
---
-## <template-yield>
-`template-yield` stamps given the give template as children.
+<template is="named-template" name="page">
+  <section class="description">[[description]]</section>
+</template>
+
+<template is="named-template" name="footer">
+  <footer>Made with ♥ from the people at [[company]]</footer>
+</template>
+
+<template-yield from="header" title="My Awesome Site"></template-yield>
+<template-yield from="page" description="Man, gotta love templating"></template-yield>
+<template-yield from="footer" company="Simpla"></template-yield>
+```
+will render into the DOM as:
+```html
+<template-yield>
+  <header>
+    <h1>My Awesome Site</h1>
+  </header>
+<template-yield>
+<template-yield>
+  <section class="description">Man, gotta love templating</section>
+</template-yield>
+<template-yield>
+  <footer>Made with ♥ from the people at Simpla</footer>
+</template-yield>
+```
+
 ### Properties
 ##### `template`: HTMLTemplateElement
 The template you wish to stamp into the DOM
@@ -46,8 +79,10 @@ Also any other property of `template-yield`, `template` or `named-template`.
 
 *Note: The last \_\* means any property starting with \_, this is just a precaution to make sure it doesn't conflict with any private properties that may be undocumented*
 
-## <named-template>
+## \<template is="named-template"\>
 `named-template` extends `template` and defines a template with a `name` property that identifies it to `template-yield`. See above for examples of usage with `template-yield`
+### Usage
+See usage of `template-yield`
 ### Properties
 ##### `name`: String
 Name of template
