@@ -17,16 +17,25 @@
   </head>
   <body>
     <template id="app" is="dom-bind">
-      <button class="page-selector" data-page="home">home</button>
-      <button class="page-selector" data-page="about">about</button>
-      <button class="page-selector" data-page="portfolio">portfolio</button>
-      <template-yield template="[[page]]" props="[[pageProps]]"></template-yield>
+      <div>
+        <div><strong>Choose Page</strong></div>
+        <button class="page-selector" data-page="home">home</button>
+        <button class="page-selector" data-page="about">about</button>
+        <button class="page-selector" data-page="portfolio">portfolio</button>
+        <br /><br />
+        <div><strong>Write some content</strong></div>
+        <textarea value="{{text::input}}"></textarea>
+      </div>
+      <h2>Output</h2>
+      <div style="border: solid black thin; padding: 15px;">
+        <template-yield template="[[master]]" page="[[page]]" header="[[header]]" footer="[[footer]]" text="[[text]]"></template-yield>
+      </div>
     </template>
 
     <!-- Internally defined templates -->
     <template id="about">
       <div>Hi, I'm the about page!</div>
-      <div>I like [[stuff]]</div>
+      <div>[[text]]</div>
     </template>
 
     <script>
@@ -63,18 +72,17 @@
           .forEach(function(button) {
             button.addEventListener('click', function() {
               var page = button.dataset.page;
-              app.set('pageProps.page', pages[page]);
+              app.page = pages[page];
             });
           });
       });
 
       // Setup the default page to be the master, with default sub parts
-      app.page = templates.master;
-      app.pageProps = {
-        header: templates.header,
-        footer: templates.footer,
-        page: pages.home
-      };
+      app.header = templates.header;
+      app.footer = templates.footer;
+      app.master = templates.master;
+
+      app.page = pages.home;
     </script>
   </body>
 </html>
