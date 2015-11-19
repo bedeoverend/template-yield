@@ -53,7 +53,8 @@ class TemplateYield {
     passthrough = (property) => {
       Object.defineProperty(this, property, {
         set: (value) => this.instance[property] = value,
-        get: () => this.instance[property]
+        get: () => this.instance[property],
+        configurable: true
       });
     };
 
