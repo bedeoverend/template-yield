@@ -10,6 +10,10 @@ Polymer(NamedTemplate);
 class TemplateYield {
   beforeRegister() {
     this.is = 'template-yield';
+
+    this.observers = [
+      '_stamp(template, _insertionPoint)'
+    ];
   }
 
   get properties() {
@@ -18,9 +22,7 @@ class TemplateYield {
        * Current template instance that's been stamped into DOM
        * @type {TemplateInstance}
        */
-      instance: {
-        observer: '_instanceChanged'
-      },
+      instance: Object,
 
       /**
        * Array of props needed by the current instance
@@ -36,9 +38,7 @@ class TemplateYield {
        * Template to be stamped into the DOM
        * @type {HTMLTemplateElement}
        */
-      template: {
-        observer: '_templateChanged'
-      },
+      template: Object,
 
       /**
        * Name of template to load. Must correspond to a named-template with same name
@@ -47,6 +47,19 @@ class TemplateYield {
       from: {
         type: String,
         observer: '_fromChanged'
+      },
+
+      /**
+       * HTMLElement to stamp template into. If none specified, will stamp into
+       * 	self
+       * @type {HTMLElement}
+       */
+      to: {
+        value: null
+      },
+
+      _insertionPoint: {
+        computed: '_computeInsertionPoint(to)'
       }
     };
   }
@@ -89,27 +102,32 @@ class TemplateYield {
     allowedProperties.forEach(passAndSet);
   }
 
-  _instanceChanged(instance) {
+  _stamp(template, insertTo) {
+    let instance = this._buildInstance(template),
+        takeFrom = this._lastInsertionPoint;
+
     // Remove all current nodes
     // note that this element has no shadow DOM, so its safe to not use
     // Polymer.dom
-    while (this.lastChild) {
-      this.lastChild.remove();
+    while (takeFrom && takeFrom.lastChild) {
+      takeFrom.lastChild.remove();
     }
 
-    this.appendChild(instance.root);
+    insertTo.appendChild(instance.root);
+
+    // Update old insertion point
+    this._lastInsertionPoint = insertTo;
+
+    this.instance = instance;
   }
 
-  _templateChanged(template) {
-    let instance;
-
+  _buildInstance(template) {
     // Remove getters and setters and replace properties with actual values
     //  this means that values can be carried over when changing templates
     this._decoupleInstanceProperties();
 
     this.templatize(template);
-    instance = this.stamp();
-    this.instance = instance;
+    return this.stamp();
   }
 
   _fromChanged(name) {
@@ -138,6 +156,10 @@ class TemplateYield {
 
     return Object.keys(instance._propertyEffects)
             .filter(prop => instance._propertyEffects[prop][0].kind === 'annotation');
+  }
+
+  _computeInsertionPoint(to) {
+    return to || this;
   }
 }
 

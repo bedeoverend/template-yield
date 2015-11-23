@@ -28,6 +28,12 @@ c!DOCTYPE html>
       <div>I'm Neptune. I'm named</div>
     </template>
 
+    <test-fixture id="insertion">
+      <template>
+        <div></div>
+      </template>
+    </test-fixture>
+
     <test-fixture id="default">
       <template>
         <template-yield></template-yield>
@@ -105,6 +111,17 @@ c!DOCTYPE html>
               expect(component.weather).to.equal('rainy');
 
             });
+          });
+        });
+
+        describe('alternate insertion point', function() {
+          it('should stamp template into \'to\' element', function() {
+            var wrapper = fixture('insertion');
+
+            component.template = templates.saturn;
+            component.to = wrapper;
+
+            expect(wrapper.textContent.trim()).to.equal('I love saturn');
           });
         });
       });

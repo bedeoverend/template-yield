@@ -52,6 +52,12 @@ Name of the `named-template` you'd like to use e.g.
 <template-yield from="header" title="My Awesome Site"></template-yield>
 ```
 
+##### `to`: HTMLElement
+HTMLElement you'd like to stamp the template into. If `to` is not specified (or falsey), it will default to stamping inside itself.
+```html
+<template-yield from="header" to="[[myContainer]]" title="My Awesome Site"></template-yield>
+```
+
 ##### `*`: *
 Any property (a part from reserved, see below) will be passed on to the given template e.g.
 ```html
@@ -73,7 +79,7 @@ will be rendered out into the DOM as:
 ###### Reserved properties
 The following cannot be used as properties on template yield as they cause conflicts, using them may cause errors.
 
-*template, from, instance, is, content, name \_*
+*template, from, to, instance, is, content, name \_*
 
 Also any other property of `template-yield`, `template` or `named-template`.
 
