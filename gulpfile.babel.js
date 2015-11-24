@@ -1,42 +1,45 @@
 import gulp from 'gulp';
 import del from 'del';
-import webpack from 'webpack-stream';
-import named from 'vinyl-named';
-import autoprefixer from 'autoprefixer';
-import wct from 'web-component-tester';
+import path from 'path';
 import notify from 'gulp-notify';
+import filter from 'gulp-filter';
+import gulpif from 'gulp-if';
 import gulprun from 'run-sequence';
 import vulcanize from 'gulp-vulcanize';
-import gulpif from 'gulp-if';
 import eslint from 'gulp-eslint';
+import rollup from 'gulp-rollup';
+import npm from 'rollup-plugin-npm';
+import commonJs from 'rollup-plugin-commonjs';
+import babel from 'rollup-plugin-babel';
 import postcss from 'gulp-postcss';
+import autoprefixer from 'autoprefixer';
 import minify from 'gulp-minify-inline';
 import plumber from 'gulp-plumber';
 import yargs from 'yargs';
 import browserSync from 'browser-sync';
-import { componentImports } from './bower.json';
-import path from 'path';
+import wct from 'web-component-tester';
+import { componentImports, name as ELEMENT_NAME } from './bower.json';
+
 
 const imports = componentImports.map(dep => `../${dep}`),
-      TEMPLATE_YIELD = 'template-yield',
       bs = browserSync.create(),
       argv = yargs.alias('d', 'debug').boolean(['debug']).argv,
       errorNotifier = () => plumber({ errorHandler: notify.onError('Error: <%= error.message %>') }),
       options = {
-        webpack: {
-          output: {
-            filename: '[name].js'
-          },
-          module: {
-            loaders: [
-              { test: /\.js$/, loader: 'babel-loader' }
-            ]
-          }
+          rollup: {
+          plugins: [
+            npm({ main: true }),
+            commonJs(),
+            babel({
+              presets: ['es2015-rollup']
+            })
+          ]
         },
         postcss: [
           autoprefixer()
         ],
         vulcanize: {
+          stripComments: true,
           inlineCss: true,
           inlineScripts: true,
           addedImports: imports
@@ -47,7 +50,7 @@ const imports = componentImports.map(dep => `../${dep}`),
             index: 'demo/index.html',
             routes: {
               '/': './bower_components',
-              [`/${TEMPLATE_YIELD}.html`]: `./${TEMPLATE_YIELD}.html`
+              [`/${ELEMENT_NAME}.html`]: `./${ELEMENT_NAME}.html`
             }
           },
           open: false
@@ -57,27 +60,30 @@ const imports = componentImports.map(dep => `../${dep}`),
 wct.gulp.init(gulp);
 
 gulp.task('process', () => {
-  return gulp.src(['src/*/*.{html,js,css}', 'src/*.{html,js,css}'])
+  let js = filter((file) => /\.(js)$/.test(file.path), { restore: true }),
+      css = filter((file) => /\.(css)$/.test(file.path), { restore: true });
+
+  return gulp.src(['src/**/*.{html,js,css}', 'src/*.{html,js,css}'])
           .pipe(errorNotifier())
-            .pipe(gulpif('*.js', named(file => {
-              let name = path.basename(file.path, path.extname(file.path)),
-                  parent = path.basename(path.dirname(file.path));
 
-              return parent === 'src' ? name : path.join(parent, name);
-            })))
+            // Js
+            .pipe(js)
+            .pipe(eslint())
+            .pipe(eslint.format())
+            .pipe(gulpif(!argv.debug, eslint.failAfterError()))
+            .pipe(rollup(options.rollup))
+            .pipe(js.restore)
 
-            .pipe(gulpif('*.css', postcss(options.postcss)))
+            // CSS
+            .pipe(css)
+            .pipe(postcss(options.postcss))
+            .pipe(css.restore)
 
-            .pipe(gulpif('*.js', eslint()))
-            .pipe(gulpif('*.js', eslint.format()))
-            .pipe(gulpif('*.js', eslint.failAfterError()))
-
-            .pipe(gulpif('*.js', webpack(options.webpack)))
           .pipe(gulp.dest('.tmp'));
 });
 
 gulp.task('build', ['process'], () => {
-  return gulp.src([`.tmp/${TEMPLATE_YIELD}/${TEMPLATE_YIELD}.html`,`.tmp/${TEMPLATE_YIELD}.html`])
+  return gulp.src([`.tmp/${ELEMENT_NAME}/${ELEMENT_NAME}.html`,`.tmp/${ELEMENT_NAME}.html`])
           .pipe(errorNotifier())
           .pipe(vulcanize(options.vulcanize))
           .pipe(gulpif(!argv.debug, minify()))

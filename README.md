@@ -1,8 +1,8 @@
-# Template Router
+# Template Yield
+![][bower-badge]![][bowerlicense-badge][![][travis-badge]][travis-url][![][bowerdeps-badge]][bowerdeps-url][![][npmdevdeps-badge]][npmdevdeps-url]
 
-Collection of custom components to help with routing using templates
-## \<template-yield\>
-`template-yield` stamps the given template as children.
+Template-yield is a helper element to easily stamp a `<template>` into a document with Polymer data bindings. Templates can either be stamped as children of template-yield, or declaratively to a custom target. You can either supply a template directly to template-yield, or use the `named-template` helper to easily structure your project.
+
 ### Usage
 ```html
 <template is="named-template" name="header">
@@ -16,25 +16,26 @@ Collection of custom components to help with routing using templates
 </template>
 
 <template is="named-template" name="footer">
-  <footer>Made with ♥ from the people at [[company]]</footer>
+  <footer>Made with ♥ from the folks at [[company]]</footer>
 </template>
 
-<template-yield from="header" title="My Awesome Site"></template-yield>
-<template-yield from="page" description="Man, gotta love templating"></template-yield>
+<template-yield from="header" title="My Site"></template-yield>
+<template-yield from="page" description="A wonderful site"></template-yield>
 <template-yield from="footer" company="Simpla"></template-yield>
 ```
-will render into the DOM as:
+
+The above will render as
 ```html
 <template-yield>
   <header>
-    <h1>My Awesome Site</h1>
+    <h1>My Site</h1>
   </header>
 <template-yield>
 <template-yield>
-  <section class="description">Man, gotta love templating</section>
+  <section class="description">A wonderful site</section>
 </template-yield>
 <template-yield>
-  <footer>Made with ♥ from the people at Simpla</footer>
+  <footer>Made with ♥ from the folks at Simpla</footer>
 </template-yield>
 ```
 
@@ -97,13 +98,13 @@ Name of template
 
 MIT © [Simpla](admin@simpla.io)
 
-[bower-badge]: https://img.shields.io/bower/v/template-router.svg
-[bowerlicense-badge]: https://img.shields.io/bower/l/template-router.svg
-[travis-badge]: https://img.shields.io/travis/simplaio/template-router.svg
-[travis-url]: https://travis-ci.org/simplaio/template-router
-[bowerdeps-badge]: https://img.shields.io/gemnasium/simplaio/template-router.svg
-[bowerdeps-url]: https://gemnasium.com/bower/template-router
-[npmdeps-badge]: https://img.shields.io/david/simplaio/template-router.svg
-[npmdeps-url]: https://david-dm.org/simplaio/template-router
-[npmdevdeps-badge]: https://img.shields.io/david/dev/simplaio/template-router.svg?theme=shields.io
-[npmdevdeps-url]: https://david-dm.org/dev/simplaio/template-router#info=devDependencies
+[bower-badge]: https://img.shields.io/bower/v/template-yield.svg
+[bowerlicense-badge]: https://img.shields.io/bower/l/template-yield.svg
+[travis-badge]: https://img.shields.io/travis/simplaio/template-yield.svg
+[travis-url]: https://travis-ci.org/simplaio/template-yield
+[bowerdeps-badge]: https://img.shields.io/gemnasium/simplaio/template-yield.svg
+[bowerdeps-url]: https://gemnasium.com/bower/template-yield
+[npmdeps-badge]: https://img.shields.io/david/simplaio/template-yield.svg
+[npmdeps-url]: https://david-dm.org/simplaio/template-yield
+[npmdevdeps-badge]: https://img.shields.io/david/dev/simplaio/template-yield.svg?theme=shields.io
+[npmdevdeps-url]: https://david-dm.org/dev/simplaio/template-yield#info=devDependencies

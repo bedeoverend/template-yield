@@ -1,7 +1,7 @@
 {
-  "name": "template-router",
-  "description": "Collection of custom components for templating",
-  "version": "0.0.0",
+  "name": "template-yield",
+  "description": "Easily stamp <template>s with Polymer data bindings",
+  "version": "0.1.0",
   "authors": [
     "Simpla <admin@simpla.io>"
   ],
