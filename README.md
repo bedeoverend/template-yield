@@ -1,5 +1,5 @@
 # Template Yield
-![][bower-badge]![][bowerlicense-badge][![][travis-badge]][travis-url][![][bowerdeps-badge]][bowerdeps-url][![][npmdevdeps-badge]][npmdevdeps-url]
+![][bower-badge] ![][bowerlicense-badge] [![][travis-badge]][travis-url] [![][bowerdeps-badge]][bowerdeps-url] [![][npmdevdeps-badge]][npmdevdeps-url]
 
 Template-yield is a helper element to easily stamp a `<template>` into a document with Polymer data bindings. Templates can either be stamped as children of template-yield, or declaratively to a custom target. You can either supply a template directly to template-yield, or use the `named-template` helper to easily structure your project.
 
