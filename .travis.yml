@@ -1,4 +1,21 @@
 sudo: false
 language: node_js
 node_js:
-  - "4"
+- '4'
+before_script:
+- npm install bower
+- bower install
+script: wct --plugin sauce
+cache:
+  directories:
+  - node_modules
+addons:
+  firefox: latest
+  apt:
+    sources:
+    - google-chrome
+    packages:
+    - google-chrome-stable
+notifications:
+  slack:
+    secure: AnxPfwRwG8O7KoW3xjcLbk843uOicX01/ZYq+haqsTNNaa3J8LtvuikxBuMgSByEsiJEPa6Kq1j/mJPVpEo3pqBqGNmNP7G9ypSu5DW8+fxMkevhoxXHv5ARyjGFwD17lnP2I9mlGDJSAK2hdo60FoMkw7wr4QanZTBg4M8RertPXCPh9V662SOiIE0MXnr90QkdstT82NNYHNc/acm9v9vMshhEUotN3yDElFIzp7iGFIIagIgwhLdNk0cZEnt1UY9wG8xXpX7oKkShdU/J8023/m+Bo2OE+ZSJXzO01cdv/VsBQVcqc0TVecb+5jorUe5YlzqCuS1yOcuXeOV3wG8O5cA3Q2tlLK7P5ujAhxEHhuxFjMgxVsIJmZQksjvEQlGVVCdr9PNfDvE976ne5pPP7v30NvR19FN4nkzSauwsLogZQWd1CdtP8tZT4yWHPpgBCqASbozOgSuS3GDyykz5HunNEF85bjoULxovKPdkboQwQtDfCiBVNw4M9FO0YwDSKmRmwAzxW1qDFjOxoZICdCPzQU4rkBobEKALYRbiI3F4Fcepc4Jzut0f69RUJeFbaYVpRyYrsjCbQO+UePSivz6VZ9uErGglkc0fmmsDHitHkDXFcP6AqUtfnQEcX4peSeNsILbN0UWutduk7K2IhhJm+UXtLZ8+wx2PYPs=
