@@ -26,7 +26,7 @@ const imports = componentImports.map(dep => `../${dep}`),
       argv = yargs.alias('d', 'debug').boolean(['debug']).argv,
       errorNotifier = () => plumber({ errorHandler: notify.onError('Error: <%= error.message %>') }),
       options = {
-          rollup: {
+        rollup: {
           plugins: [
             npm({ main: true }),
             commonJs(),
@@ -100,7 +100,7 @@ gulp.task('run', callback => {
 
 gulp.task('clean', () => del([ '.tmp' ]));
 
-gulp.task('demo', (callback) => bs.init(options.browserSync));
+gulp.task('demo', () => bs.init(options.browserSync));
 
 gulp.task('refresh', () => bs.reload());
 
