@@ -107,10 +107,10 @@ class TemplateYield {
         takeFrom = this._lastInsertionPoint;
 
     // Remove all current nodes
-    // note that this element has no shadow DOM, so its safe to not use
-    // Polymer.dom
+    // Note: that this element has no shadow DOM, so its safe to not use
+    //  Polymer.dom
     while (takeFrom && takeFrom.lastChild) {
-      takeFrom.lastChild.remove();
+      takeFrom.removeChild(takeFrom.lastChild);
     }
 
     insertTo.appendChild(instance.root);
