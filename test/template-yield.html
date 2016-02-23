@@ -12,6 +12,20 @@
     <link rel="import" href="../template-yield.html">
   </head>
   <body>
+    <dom-module id="mock-element">
+      <template>
+        <template-yield from="[[from]]" text="{{text}}"></template-yield>
+      </template>
+      <script>
+        Polymer({
+          is: 'mock-element',
+          properties: {
+            text: String,
+            from: String
+          }
+        });
+      </script>
+    </dom-module>
     <template class="fixture" id="mars">
       <div>I love mars</div>
     </template>
@@ -26,6 +40,10 @@
 
     <template is="named-template" name="neptune" class="fixture" id="neptune">
       <div>I'm Neptune. I'm named</div>
+    </template>
+
+    <template is="named-template" name="two-way" class="fixture" id="two-way">
+      <input type="text" value="{{text::input}}">
     </template>
 
     <test-fixture id="insertion">
@@ -122,6 +140,22 @@
             component.to = wrapper;
 
             expect(wrapper.textContent.trim()).to.equal('I love saturn');
+          });
+        });
+
+        describe('two way binding', function() {
+          it('should bind upwards to host elements of template-yield', function() {
+            var mock = document.createElement('mock-element'),
+                from = 'two-way',
+                text = 'some text',
+                input;
+
+            mock.from = from;
+
+            input = mock.$$('input');
+            input.value = text;
+
+            expect(mock.text).to.equal(text);
           });
         });
       });
