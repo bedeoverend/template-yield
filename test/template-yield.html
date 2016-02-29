@@ -12,20 +12,6 @@
     <link rel="import" href="../template-yield.html">
   </head>
   <body>
-    <dom-module id="mock-element">
-      <template>
-        <template-yield from="[[from]]" text="{{text}}"></template-yield>
-      </template>
-      <script>
-        Polymer({
-          is: 'mock-element',
-          properties: {
-            text: String,
-            from: String
-          }
-        });
-      </script>
-    </dom-module>
     <template class="fixture" id="mars">
       <div>I love mars</div>
     </template>
@@ -144,19 +130,20 @@
         });
 
         describe('two way binding', function() {
-          it('should bind upwards to host elements of template-yield', function() {
-            var mock = document.createElement('mock-element'),
-                from = 'two-way',
-                text = 'some text',
+          it('should bind upwards to host elements of template-yield', function(done) {
+            var text = 'foo',
                 input;
 
-            mock.from = from;
+            component.template = templates['two-way'];
 
-            input = mock.$$('input');
+            component.addEventListener('text-changed', function(event) {
+              expect(event.detail.value).to.equal(text);
+              done();
+            });
+
+            input = component.$$('input');
             input.value = text;
             input.dispatchEvent(new Event('input'));
-
-            expect(mock.text).to.equal(text);
           });
         });
       });
