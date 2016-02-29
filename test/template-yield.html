@@ -154,6 +154,7 @@
 
             input = mock.$$('input');
             input.value = text;
+            input.dispatchEvent(new Event('input'));
 
             expect(mock.text).to.equal(text);
           });
