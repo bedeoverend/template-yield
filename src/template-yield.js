@@ -87,12 +87,27 @@ class TemplateYield {
       });
     };
 
+    // Notify of changes to that property
+    notifyOfChanges = (property) => {
+      const method = `_${property}Changed`,
+            event = `${property}-changed`;
+
+      // Create the observer method that fires the event
+      this.instance[method] = (value) => {
+        this.fire(event, { value });
+      };
+
+      // Create the effect on the instance
+      this.instance._addPropertyEffect(property, 'observer', { method });
+    };
+
     // Get the current value before calling passthrough on the property,
     //  then restore that value
     passAndSet = (property) => {
       let valueToRestore = this[property];
 
       passthrough(property);
+      notifyOfChanges(property);
 
       if (valueToRestore) {
         this[property] = valueToRestore;
