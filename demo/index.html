@@ -29,7 +29,7 @@
       </div>
       <h2>Output</h2>
       <div style="border: solid black thin; padding: 15px;">
-        <template-yield template="[[template]]" page-name="[[pageName]]" page="[[page]]" text="[[text]]"></template-yield>
+        <template-yield template="[[template]]" page-name="[[pageName]]" page="[[page]]" text="{{text}}"></template-yield>
         <template-yield template="[[template]]" to="[[wrapper]]" page-name="[[pageName]]" page="[[page]]" text="[[text]]"></template-yield>
       </div>
       <div>
@@ -42,6 +42,12 @@
     <template id="about">
       <div>Hi, I'm the about page!</div>
       <div>[[text]]</div>
+      <br />
+      <div>
+        <label>This part will show off two way binding</label><br/>
+        <input type="text" value="{{text::input}}">
+      </div>
+
     </template>
 
     <script>
