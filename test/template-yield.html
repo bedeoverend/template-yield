@@ -28,6 +28,10 @@
       <div>I'm Neptune. I'm named</div>
     </template>
 
+    <template is="named-template" name="two-way" class="fixture" id="two-way">
+      <input type="text" value="{{text::input}}">
+    </template>
+
     <test-fixture id="insertion">
       <template>
         <div></div>
@@ -122,6 +126,24 @@
             component.to = wrapper;
 
             expect(wrapper.textContent.trim()).to.equal('I love saturn');
+          });
+        });
+
+        describe('two way binding', function() {
+          it('should bind upwards to host elements of template-yield', function(done) {
+            var text = 'foo',
+                input;
+
+            component.template = templates['two-way'];
+
+            component.addEventListener('text-changed', function(event) {
+              expect(event.detail.value).to.equal(text);
+              done();
+            });
+
+            input = component.$$('input');
+            input.value = text;
+            input.dispatchEvent(new Event('input'));
           });
         });
       });
