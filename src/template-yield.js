@@ -12,7 +12,8 @@ class TemplateYield {
     this.is = 'template-yield';
 
     this.observers = [
-      '_stamp(template, model, _insertionPoint)'
+      '_stamp(template, model, _insertionPoint)',
+      '_callReady(model, instance)'
     ];
   }
 
@@ -99,6 +100,12 @@ class TemplateYield {
       console.warn(`Could not find '${name}' template.`);
     } else {
       this.template = template;
+    }
+  }
+
+  _callReady(model, instance) {
+    if (typeof model.ready === 'function') {
+      model.ready.call(instance, this._insertionPoint);
     }
   }
 

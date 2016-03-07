@@ -113,6 +113,19 @@
 
               expect(component.textContent.trim()).to.equal('The weather is rainy');
             });
+
+            it('should call ready() on model if it exists', function(done) {
+              component.model = {
+                weather: 'rainy',
+                ready: function(element) {
+                  expect(element.querySelector('div')).to.be.ok;
+                  expect(this.weather).to.equal('rainy');
+                  done();
+                }
+              };
+
+              component.template = templates.weather;
+            });
           });
         });
 
