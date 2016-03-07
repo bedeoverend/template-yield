@@ -89,27 +89,42 @@
           describe('passing properties', function() {
             it('pass after template is set', function() {
               component.template = templates.weather;
-              component.weather = 'rainy';
+              component.model = { weather: 'rainy' };
 
               expect(component.textContent.trim()).to.equal('The weather is rainy');
             });
 
             it('pass before template is set', function() {
-              component.weather = 'rainy';
+              component.model = { weather: 'rainy' };
               component.template = templates.weather;
 
               expect(component.textContent.trim()).to.equal('The weather is rainy');
             });
 
             it('should retain the old value even when decoupling the instance', function() {
-              component.weather = 'rainy';
+              component.model = { weather: 'rainy' };
               component.template = templates.weather;
 
-              expect(component.weather).to.equal('rainy');
+              expect(component.textContent.trim()).to.equal('The weather is rainy');
 
+              // Swap templates back and forth
               component.template = templates.saturn;
-              expect(component.weather).to.equal('rainy');
+              component.template = templates.weather;
 
+              expect(component.textContent.trim()).to.equal('The weather is rainy');
+            });
+
+            it('should call ready() on model if it exists', function(done) {
+              component.model = {
+                weather: 'rainy',
+                ready: function(element) {
+                  expect(element.querySelector('div')).to.be.ok;
+                  expect(this.weather).to.equal('rainy');
+                  done();
+                }
+              };
+
+              component.template = templates.weather;
             });
           });
         });

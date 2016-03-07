@@ -25,12 +25,12 @@
         <button class="named-page-selector" data-page="contact">contact</button>
         <br /><br />
         <div><strong>Write some content</strong></div>
-        <textarea value="{{text::input}}"></textarea>
+        <textarea value="{{model.text::input}}"></textarea>
       </div>
       <h2>Output</h2>
       <div style="border: solid black thin; padding: 15px;">
-        <template-yield template="[[template]]" page-name="[[pageName]]" page="[[page]]" text="[[text]]"></template-yield>
-        <template-yield template="[[template]]" to="[[wrapper]]" page-name="[[pageName]]" page="[[page]]" text="[[text]]"></template-yield>
+        <template-yield template="[[template]]" model="[[model]]"></template-yield>
+        <template-yield template="[[template]]" to="[[wrapper]]" model="[[model]]"></template-yield>
       </div>
       <div>
         <h3>Below is a div, used as an insertion point</h3>
@@ -42,6 +42,7 @@
     <template id="about">
       <div>Hi, I'm the about page!</div>
       <div>[[text]]</div>
+      <input type="text" value="{{text::input}}">
     </template>
 
     <script>
@@ -50,6 +51,14 @@
           pages = {
             about: document.getElementById('about')
           };
+
+      app.model = {
+        text: ''
+      };
+
+      function setModel(options) {
+        app.model = Object.assign({}, app.model, options);
+      }
 
       // Setup pages
       (function() {
@@ -82,7 +91,7 @@
           .forEach(function(button) {
             button.addEventListener('click', function() {
               var page = button.dataset.page;
-              app.page = pages[page];
+              setModel({ page: pages[page] });
             });
           });
 
@@ -90,7 +99,7 @@
         namedPageSelectors
           .forEach(function(button) {
             button.addEventListener('click', function() {
-              app.pageName = button.dataset.page;
+              setModel({ pageName: button.dataset.page });
             });
           });
 

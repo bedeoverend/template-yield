@@ -12,7 +12,8 @@ class TemplateYield {
     this.is = 'template-yield';
 
     this.observers = [
-      '_stamp(template, _insertionPoint)'
+      '_stamp(template, model, _insertionPoint)',
+      '_callReady(model, instance)'
     ];
   }
 
@@ -25,13 +26,12 @@ class TemplateYield {
       instance: Object,
 
       /**
-       * Array of props needed by the current instance
-       * @type {Array<string>}
+       * Model object to attach to the instance
+       * @type {Object}
        */
-      _instanceProps: {
-        computed: '_getInstanceProps(instance)',
-        observer: '_instancePropsChanged',
-        value: () => []
+      model: {
+        type: Object,
+        value: () => ({})
       },
 
       /**
@@ -70,40 +70,8 @@ class TemplateYield {
     ];
   }
 
-  _instancePropsChanged(properties) {
-    let hostProperties = Object.keys(this.properties),
-        allowedProperties = properties.filter(property => hostProperties.indexOf(property) === -1),
-        passAndSet,
-        passthrough;
-
-    // Take the property and create getters and setters to pass the value
-    //  to and from the current instance
-    passthrough = (property) => {
-      Object.defineProperty(this, property, {
-        set: (value) => this.instance[property] = value,
-        get: () => this.instance[property],
-        configurable: true,
-        enumerable: true
-      });
-    };
-
-    // Get the current value before calling passthrough on the property,
-    //  then restore that value
-    passAndSet = (property) => {
-      let valueToRestore = this[property];
-
-      passthrough(property);
-
-      if (valueToRestore) {
-        this[property] = valueToRestore;
-      }
-    };
-
-    allowedProperties.forEach(passAndSet);
-  }
-
-  _stamp(template, insertTo) {
-    let instance = this._buildInstance(template),
+  _stamp(template, model, insertTo) {
+    let instance = this._buildInstance(template, model),
         takeFrom = this._lastInsertionPoint;
 
     // Remove all current nodes
@@ -121,13 +89,9 @@ class TemplateYield {
     this.instance = instance;
   }
 
-  _buildInstance(template) {
-    // Remove getters and setters and replace properties with actual values
-    //  this means that values can be carried over when changing templates
-    this._decoupleInstanceProperties();
-
+  _buildInstance(template, model) {
     this.templatize(template);
-    return this.stamp();
+    return this.stamp(model);
   }
 
   _fromChanged(name) {
@@ -139,23 +103,10 @@ class TemplateYield {
     }
   }
 
-  _decoupleInstanceProperties() {
-    this._instanceProps.forEach(property => {
-      Object.defineProperty(this, property, {
-        configurable: true,
-        enumerable: true,
-        value: this[property]
-      });
-    });
-  }
-
-  _getInstanceProps(instance) {
-    if (!(instance && instance._propertyEffects)) {
-      return [];
+  _callReady(model, instance) {
+    if (typeof model.ready === 'function') {
+      model.ready.call(instance, this._insertionPoint);
     }
-
-    return Object.keys(instance._propertyEffects)
-            .filter(prop => instance._propertyEffects[prop][0].kind === 'annotation');
   }
 
   _computeInsertionPoint(to) {
