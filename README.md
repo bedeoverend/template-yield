@@ -19,10 +19,12 @@ Template-yield is a helper element to easily stamp a `<template>` into a documen
   <footer>Made with ♥ from the folks at [[company]]</footer>
 </template>
 
-<template-yield from="header" title="My Site"></template-yield>
-<template-yield from="page" description="A wonderful site"></template-yield>
-<template-yield from="footer" company="Simpla"></template-yield>
+<template-yield from="header" model="[[header]]"></template-yield>
+<template-yield from="page" model="[[page]]"></template-yield>
+<template-yield from="footer" model="[[footer]]"></template-yield>
 ```
+
+where `header`, `page` and `footer` are objects that have `title`, `description` and `company` properties respectively.
 
 The above will render as
 ```html
@@ -59,32 +61,16 @@ HTMLElement you'd like to stamp the template into. If `to` is not specified (or 
 <template-yield from="header" to="[[myContainer]]" title="My Awesome Site"></template-yield>
 ```
 
-##### `*`: *
-Any property (a part from reserved, see below) will be passed on to the given template e.g.
+##### `model`: Object
+An object that defines all the properties to be passed to the template
 ```html
 <template is="named-template" name="page">
   <h1>[[title]]</h1>
   <section class="description">[[description]]</section>
 </template>
 
-<template-yield from="page" title="My Awesome Site" description="Man, gotta love templating"></template-yield>
+<template-yield from="page" model="[[properties]]"></template-yield>
 ```
-will be rendered out into the DOM as:
-```html
-<template-yield>
-<h1>My Awesome Site</h1>
-<section class="description">Man, gotta love templating</section>
-</template-yield>
-```
-
-###### Reserved properties
-The following cannot be used as properties on template yield as they cause conflicts, using them may cause errors.
-
-*template, from, to, instance, is, content, name \_*
-
-Also any other property of `template-yield`, `template` or `named-template`.
-
-*Note: The last \_\* means any property starting with \_, this is just a precaution to make sure it doesn't conflict with any private properties that may be undocumented*
 
 ## \<template is="named-template"\>
 `named-template` extends `template` and defines a template with a `name` property that identifies it to `template-yield`. See above for examples of usage with `template-yield`
