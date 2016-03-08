@@ -3,6 +3,9 @@ import NamedTemplate from './helpers/named-template';
 // Register NamedTemplate
 Polymer(NamedTemplate);
 
+// Noop Polymer Constructor
+const Noop = Polymer({ is: 'no-op' });
+
 /**
  * Element to stamp out given template, with given props.
  * Resulting stamped template is inside child Light DOM
@@ -31,7 +34,8 @@ class TemplateYield {
        */
       model: {
         type: Object,
-        value: () => ({})
+        value: () => ({}),
+        observer: '_modelChanged'
       },
 
       /**
@@ -68,6 +72,10 @@ class TemplateYield {
     return [
       Polymer.Templatizer
     ];
+  }
+
+  _getRootDataHost() {
+    return this._instanceDataHost;
   }
 
   _stamp(template, model, insertTo) {
@@ -111,6 +119,15 @@ class TemplateYield {
 
   _computeInsertionPoint(to) {
     return to || this;
+  }
+
+  _modelChanged(model) {
+    this._instanceDataHost = new Noop();
+    Object
+      .keys(model)
+      .forEach(key => {
+        this._instanceDataHost[key] = model[key];
+      });
   }
 }
 

@@ -28,6 +28,10 @@
       <div>I'm Neptune. I'm named</div>
     </template>
 
+    <template is="named-template" name="tap-handling" class="fixture" id="tap-handling">
+      <button on-tap="handleTap"></button>
+    </template>
+
     <test-fixture id="insertion">
       <template>
         <div></div>
@@ -126,6 +130,21 @@
 
               component.template = templates.weather;
             });
+          });
+        });
+
+        describe('event delegation', function() {
+          it('should call functions on the given model when handling declerative events', function() {
+            var handleTap = sinon.spy();
+            component.model = {
+              handleTap: handleTap
+            };
+
+            component.template = templates['tap-handling'];
+
+            expect(handleTap.called).to.be.false;
+            Polymer.dom(component).querySelector('button').dispatchEvent(new Event('tap'));
+            expect(handleTap.called).to.be.true;
           });
         });
 
