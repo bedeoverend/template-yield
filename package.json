@@ -1,6 +1,6 @@
 {
   "name": "template-yield",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Easily stamp <template>s with Polymer data bindings",
   "scripts": {
     "test": "gulp test:local"
