@@ -158,6 +158,13 @@
             expect(wrapper.textContent.trim()).to.equal('I love saturn');
           });
         });
+
+        describe('data host', function() {
+          it('should have the instance as a property', function() {
+            component.template = templates.weather;
+            expect(component._instanceDataHost.view).to.equal(component.instance);
+          });
+        });
       });
     </script>
   </body>

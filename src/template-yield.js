@@ -16,7 +16,8 @@ class TemplateYield {
 
     this.observers = [
       '_stamp(template, model, _insertionPoint)',
-      '_callReady(model, instance)'
+      '_callReady(model, instance)',
+      '_setInstanceOnDataHost(_instanceDataHost, instance)'
     ];
   }
 
@@ -34,8 +35,7 @@ class TemplateYield {
        */
       model: {
         type: Object,
-        value: () => ({}),
-        observer: '_modelChanged'
+        value: () => ({})
       },
 
       /**
@@ -60,6 +60,10 @@ class TemplateYield {
        */
       to: {
         value: null
+      },
+
+      _instanceDataHost: {
+        computed: '_computeInstanceDataHost(model)'
       },
 
       _insertionPoint: {
@@ -121,13 +125,19 @@ class TemplateYield {
     return to || this;
   }
 
-  _modelChanged(model) {
-    this._instanceDataHost = new Noop();
+  _computeInstanceDataHost(model) {
+    let _instanceDataHost = new Noop();
     Object
       .keys(model)
       .forEach(key => {
-        this._instanceDataHost[key] = model[key];
+        _instanceDataHost[key] = model[key];
       });
+
+    return _instanceDataHost;
+  }
+
+  _setInstanceOnDataHost(dataHost, instance) {
+    dataHost.view = instance;
   }
 }
 
