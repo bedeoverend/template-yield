@@ -137,7 +137,7 @@ class TemplateYield {
   }
 
   _setInstanceOnDataHost(dataHost, instance) {
-    dataHost.instance = instance;
+    dataHost.view = instance;
   }
 }
 

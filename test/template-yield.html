@@ -162,7 +162,7 @@
         describe('data host', function() {
           it('should have the instance as a property', function() {
             component.template = templates.weather;
-            expect(component._instanceDataHost.instance).to.equal(component.instance);
+            expect(component._instanceDataHost.view).to.equal(component.instance);
           });
         });
       });
