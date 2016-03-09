@@ -113,7 +113,7 @@ class TemplateYield {
 
   _callReady(model, instance) {
     if (typeof model.ready === 'function') {
-      model.ready.call(instance, this._insertionPoint);
+      model.ready.call(this._instanceDataHost, this._insertionPoint);
     }
   }
 
