@@ -15,7 +15,7 @@ class TemplateYield {
     this.is = 'template-yield';
 
     this.observers = [
-      '_stamp(template, model, _insertionPoint)',
+      '_stamp(template, _insertionPoint)',
       '_callReady(model, instance)',
       '_setInstanceOnDataHost(_instanceDataHost, instance)'
     ];
@@ -35,7 +35,8 @@ class TemplateYield {
        */
       model: {
         type: Object,
-        value: () => ({})
+        value: () => ({}),
+        observer: '_modelChanged'
       },
 
       /**
@@ -82,23 +83,25 @@ class TemplateYield {
     return this._instanceDataHost;
   }
 
-  _stamp(template, model, insertTo) {
-    let instance = this._buildInstance(template, model),
-        takeFrom = this._lastInsertionPoint;
+  _stamp(template, insertTo) {
+    this.debounce('stamping', () => {
+      let instance = this._buildInstance(template, this.model),
+          takeFrom = this._lastInsertionPoint;
 
-    // Remove all current nodes
-    // Note: that this element has no shadow DOM, so its safe to not use
-    //  Polymer.dom
-    while (takeFrom && takeFrom.lastChild) {
-      takeFrom.removeChild(takeFrom.lastChild);
-    }
+      // Remove all current nodes
+      // Note: that this element has no shadow DOM, so its safe to not use
+      //  Polymer.dom
+      while (takeFrom && takeFrom.lastChild) {
+        takeFrom.removeChild(takeFrom.lastChild);
+      }
 
-    insertTo.appendChild(instance.root);
+      insertTo.appendChild(instance.root);
 
-    // Update old insertion point
-    this._lastInsertionPoint = insertTo;
+      // Update old insertion point
+      this._lastInsertionPoint = insertTo;
 
-    this.instance = instance;
+      this.instance = instance;
+    });
   }
 
   _buildInstance(template, model) {
@@ -138,6 +141,19 @@ class TemplateYield {
 
   _setInstanceOnDataHost(dataHost, instance) {
     dataHost.view = instance;
+  }
+
+  _modelChanged(model) {
+    if (!this.instance) {
+      return;
+    }
+
+    Object
+      .keys(model)
+      .forEach(key => {
+        this.instance[key] = model[key];
+        this._instanceDataHost[key] = model[key];
+      });
   }
 }
 
