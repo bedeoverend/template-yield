@@ -84,22 +84,24 @@ class TemplateYield {
   }
 
   _stamp(template, insertTo) {
-    let instance = this._buildInstance(template, this.model),
-        takeFrom = this._lastInsertionPoint;
+    this.debounce('stamping', () => {
+      let instance = this._buildInstance(template, this.model),
+          takeFrom = this._lastInsertionPoint;
 
-    // Remove all current nodes
-    // Note: that this element has no shadow DOM, so its safe to not use
-    //  Polymer.dom
-    while (takeFrom && takeFrom.lastChild) {
-      takeFrom.removeChild(takeFrom.lastChild);
-    }
+      // Remove all current nodes
+      // Note: that this element has no shadow DOM, so its safe to not use
+      //  Polymer.dom
+      while (takeFrom && takeFrom.lastChild) {
+        takeFrom.removeChild(takeFrom.lastChild);
+      }
 
-    insertTo.appendChild(instance.root);
+      insertTo.appendChild(instance.root);
 
-    // Update old insertion point
-    this._lastInsertionPoint = insertTo;
+      // Update old insertion point
+      this._lastInsertionPoint = insertTo;
 
-    this.instance = instance;
+      this.instance = instance;
+    });
   }
 
   _buildInstance(template, model) {

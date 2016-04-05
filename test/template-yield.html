@@ -61,6 +61,13 @@
 
         beforeEach(function() {
           component = fixture('default');
+          sinon.stub(component, 'debounce', function(queue, callback) {
+            callback();
+          });
+        });
+
+        afterEach(function() {
+          component.debounce.restore();
         });
 
         it('is okay', function() {
