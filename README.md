@@ -32,7 +32,7 @@ The above will render as
   <header>
     <h1>My Site</h1>
   </header>
-<template-yield>
+</template-yield>
 <template-yield>
   <section class="description">A wonderful site</section>
 </template-yield>
