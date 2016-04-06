@@ -125,6 +125,19 @@
               expect(component.textContent.trim()).to.equal('The weather is rainy');
             });
 
+            it('shouldn\'t overwrite previous values if set', function() {
+              // This is for scenarios when the instance has been stamped, then
+              //  values are bound onto it, then the model is applied, it shouldnt
+              //  overwrite those bound values
+              component.template = templates.weather;
+              component.instance.weather = 'rainy';
+
+              component.model = { weather: 'cloudy', cold: true };
+
+              expect(component.instance.weather).to.equal('rainy');
+              expect(component.instance.cold).to.be.true;
+            });
+
             it('should call ready() on model if it exists', function(done) {
               component.model = {
                 weather: 'rainy',

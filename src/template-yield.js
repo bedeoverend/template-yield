@@ -151,8 +151,15 @@ class TemplateYield {
     Object
       .keys(model)
       .forEach(key => {
-        this.instance[key] = model[key];
-        this._instanceDataHost[key] = model[key];
+        [
+          this.instance,
+          this._instanceDataHost
+        ].forEach(host => {
+          // Check to make sure the instance / host hasn't already had that data set
+          if (typeof host[key] === 'undefined') {
+            host[key] = model[key];
+          }
+        });
       });
   }
 }
