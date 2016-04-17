@@ -11,34 +11,18 @@ Template-yield is a helper element to easily stamp a `<template>` into a documen
   </header>
 </template>
 
-<template is="named-template" name="page">
-  <section class="description">[[description]]</section>
-</template>
-
-<template is="named-template" name="footer">
-  <footer>Made with ♥ from the folks at [[company]]</footer>
-</template>
-
 <template-yield from="header" model="[[header]]"></template-yield>
-<template-yield from="page" model="[[page]]"></template-yield>
-<template-yield from="footer" model="[[footer]]"></template-yield>
 ```
 
-where `header`, `page` and `footer` are objects that have `title`, `description` and `company` properties respectively.
+where `header` is an object that has a `title` property.
 
-The above will render as
+The above could render as
 ```html
 <template-yield>
   <header>
     <h1>My Site</h1>
   </header>
 <template-yield>
-<template-yield>
-  <section class="description">A wonderful site</section>
-</template-yield>
-<template-yield>
-  <footer>Made with ♥ from the folks at Simpla</footer>
-</template-yield>
 ```
 
 ### Properties
