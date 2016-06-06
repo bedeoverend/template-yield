@@ -119,9 +119,11 @@ class TemplateYield {
   }
 
   _callReady(model, instance) {
-    if (typeof model.ready === 'function') {
-      model.ready.call(this._instanceDataHost, this._insertionPoint);
-    }
+    this.debounce('readying', () => {
+      if (typeof model.ready === 'function') {
+        model.ready.call(this._instanceDataHost, this._insertionPoint);
+      }
+    });
   }
 
   _computeInsertionPoint(to) {
