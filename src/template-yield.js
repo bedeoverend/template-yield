@@ -27,7 +27,10 @@ class TemplateYield {
        * Current template instance that's been stamped into DOM
        * @type {TemplateInstance}
        */
-      instance: Object,
+      instance: {
+        type: Object,
+        observer: '_instanceChanged'
+      },
 
       /**
        * Model object to attach to the instance
@@ -132,8 +135,9 @@ class TemplateYield {
 
   _computeInstanceDataHost(model) {
     let _instanceDataHost = new Noop();
+
     Object
-      .keys(model)
+      .keys(model || {})
       .forEach(key => {
         _instanceDataHost[key] = model[key];
       });
@@ -146,7 +150,7 @@ class TemplateYield {
   }
 
   _modelChanged(model) {
-    if (!this.instance) {
+    if (!this.instance || !model) {
       return;
     }
 
@@ -156,6 +160,12 @@ class TemplateYield {
         this.instance[key] = model[key];
         this._instanceDataHost[key] = model[key];
       });
+  }
+
+  _instanceChanged(current, previous) {
+    if (previous && typeof previous._rootDataHost.detached === 'function') {
+      previous._rootDataHost.detached();
+    }
   }
 }
 

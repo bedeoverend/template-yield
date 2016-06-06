@@ -137,6 +137,17 @@
 
               component.template = templates.weather;
             });
+
+            it('should call detached on model when switching instances', function() {
+              component.model = {
+                detached: sinon.spy()
+              };
+
+              component.template = templates.saturn;
+              component.template = templates.weather;
+
+              expect(component.model.detached.called).to.be.true;
+            });
           });
         });
 
