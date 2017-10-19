@@ -22,7 +22,7 @@ The above could render as
   <header>
     <h1>My Site</h1>
   </header>
-<template-yield>
+</template-yield>
 ```
 
 ### Properties
