@@ -66,7 +66,7 @@ Name of template
 
 ### License
 
-MIT © [Simpla](admin@simpla.io)
+MIT © Bede Overend
 
 [bower-badge]: https://img.shields.io/bower/v/template-yield.svg
 [travis-badge]: https://img.shields.io/travis/simplaio/template-yield.svg
